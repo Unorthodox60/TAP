@@ -29,7 +29,7 @@ export default {
         }
       },
       fontFamily: {
-        heading: ['Poppins', 'Hind', 'sans-serif'],
+        heading: ['Lora', 'Hind', 'serif'],
         body: ['Inter', 'sans-serif'],
       },
       spacing: {

@@ -66,9 +66,9 @@ const Hero = () => {
             </motion.div>
           </div>
           
-          <div className="order-1 md:order-2 relative h-[300px] md:h-[500px] rounded-3xl overflow-hidden shadow-glow-primary border-4 border-white/50">
+          <div className="order-1 md:order-2 relative h-[300px] md:h-[500px] rounded-3xl overflow-hidden shadow-glow-primary border-4 border-white/50 transform-gpu">
             <motion.div 
-              className="w-full h-full"
+              className="w-full h-full will-change-transform"
               style={{ y: yParallax, scale: scaleJar }}
             >
               <picture>
@@ -86,10 +86,10 @@ const Hero = () => {
         </div>
       </div>
       
-      {/* Organic Wave Divider */}
-      <div className="absolute bottom-0 left-0 right-0 w-full overflow-hidden leading-none z-20 transform translate-y-px">
-        <svg className="relative block w-full h-[50px] md:h-[100px]" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-          <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V95.8C59.71,118,130.85,130.2,201.5,122,243.68,117.15,283.47,93.4,321.39,56.44Z" fill="currentColor" className="text-primary/5"></path>
+      {/* Smooth Organic Wave Divider */}
+      <div className="absolute bottom-0 left-0 right-0 w-full overflow-hidden leading-none z-20 transform-gpu translate-y-px pointer-events-none text-primary/5">
+        <svg className="relative block w-full h-[60px] md:h-[120px]" viewBox="0 0 1440 320" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,160 Q360,260 720,160 T1440,160 L1440,320 L0,320 Z" fill="currentColor"></path>
         </svg>
       </div>
     </section>

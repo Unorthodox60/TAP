@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { Loader2, CheckCircle2, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { productsData, dryFruitsData } from './ProductGrid';
+
+const allProducts = [...productsData, ...dryFruitsData];
 
 const PreorderForm = () => {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     pickle: 'Mango Pickle',
+    weight: '',
     quantity: '1',
     delivery: 'Next Week',
     notes: ''
@@ -35,7 +39,14 @@ const PreorderForm = () => {
     setTimeout(() => {
       setStatus('success');
       
-      const message = `*New Preorder*\n\n*Name:* ${formData.name}\n*Phone:* ${formData.phone}\n*Pickle:* ${formData.pickle} (${formData.quantity} jar)\n*Delivery:* ${formData.delivery}\n*Notes:* ${formData.notes || 'None'}`;
+      let pickleDetails = formData.pickle;
+      const product = allProducts.find(p => p.nameEn === formData.pickle);
+      if (product && product.pricing && product.pricing.length > 0) {
+        const pricing = product.pricing.find(p => p.weight === formData.weight) || product.pricing[0];
+        pickleDetails = `${product.nameHi} (${pricing.weight} - ₹${pricing.price})`;
+      }
+      
+      const message = `*New Preorder*\n\n*Name:* ${formData.name}\n*Phone:* ${formData.phone}\n*Pickle:* ${pickleDetails} (${formData.quantity} jar)\n*Delivery:* ${formData.delivery}\n*Notes:* ${formData.notes || 'None'}`;
       
       const encodedMessage = encodeURIComponent(message);
       
@@ -55,7 +66,18 @@ const PreorderForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    
+    if (name === 'pickle') {
+      const product = allProducts.find(p => p.nameEn === value);
+      let defaultWeight = '';
+      if (product && product.pricing && product.pricing.length > 0) {
+        defaultWeight = product.pricing[0].weight;
+      }
+      setFormData(prev => ({ ...prev, [name]: value, weight: defaultWeight }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
+    
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -167,44 +189,85 @@ const PreorderForm = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="md:col-span-2">
-                      <label htmlFor="pickle" className="block text-sm font-semibold text-on-surface mb-2">
-                        Select Pickle <span className="text-accent">*</span>
-                      </label>
-                      <select
-                        id="pickle"
-                        name="pickle"
-                        value={formData.pickle}
-                        onChange={handleChange}
-                        className={inputClasses(false)}
-                      >
-                        <option value="Mango Pickle (Aam)">Mango Pickle (Aam)</option>
-                        <option value="Mixed Pickle (Mix)">Mixed Pickle (Mix)</option>
-                        <option value="Garlic Pickle (Lahsun)">Garlic Pickle (Lahsun)</option>
-                        <option value="Bitter Gourd (Karela)">Bitter Gourd (Karela)</option>
-                        <option value="Premium Dry Fruit">Premium Dry Fruit Pickle</option>
-                      </select>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="md:col-span-2">
+                        <label htmlFor="pickle" className="block text-sm font-semibold text-on-surface mb-2">
+                          Select Pickle <span className="text-accent">*</span>
+                        </label>
+                        <select
+                          id="pickle"
+                          name="pickle"
+                          value={formData.pickle}
+                          onChange={handleChange}
+                          className={inputClasses(false)}
+                        >
+                          {allProducts.map(p => (
+                            <option key={p.id} value={p.nameEn}>{p.nameHi} ({p.nameEn})</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label htmlFor="quantity" className="block text-sm font-semibold text-on-surface mb-2">
+                          Quantity <span className="text-accent">*</span>
+                        </label>
+                        <select
+                          id="quantity"
+                          name="quantity"
+                          value={formData.quantity}
+                          onChange={handleChange}
+                          className={inputClasses(false)}
+                        >
+                          <option value="1">1 Jar</option>
+                          <option value="2">2 Jars</option>
+                          <option value="3">3 Jars</option>
+                          <option value="4+">4+ Jars</option>
+                        </select>
+                      </div>
                     </div>
 
-                    <div>
-                      <label htmlFor="quantity" className="block text-sm font-semibold text-on-surface mb-2">
-                        Quantity <span className="text-accent">*</span>
-                      </label>
-                      <select
-                        id="quantity"
-                        name="quantity"
-                        value={formData.quantity}
-                        onChange={handleChange}
-                        className={inputClasses(false)}
-                      >
-                        <option value="1">1 Jar</option>
-                        <option value="2">2 Jars</option>
-                        <option value="3">3 Jars</option>
-                        <option value="4+">4+ Jars</option>
-                      </select>
-                    </div>
-                  </div>
+                    {(() => {
+                      const selectedProduct = allProducts.find(p => p.nameEn === formData.pickle);
+                      const hasPricing = selectedProduct && selectedProduct.pricing && selectedProduct.pricing.length > 0;
+                      if (!hasPricing) return null;
+                      
+                      const currentPricing = selectedProduct.pricing.find(p => p.weight === formData.weight) || selectedProduct.pricing[0];
+
+                      return (
+                        <div className="bg-primary/5 rounded-2xl p-5 border border-primary/10">
+                          <label className="block text-sm font-semibold text-on-surface mb-3">
+                            Select Variant <span className="text-accent">*</span>
+                          </label>
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
+                            {selectedProduct.pricing.length > 1 ? (
+                              <div className="flex flex-wrap gap-2">
+                                {selectedProduct.pricing.map((p, idx) => (
+                                  <button
+                                    key={idx}
+                                    type="button"
+                                    onClick={() => setFormData(prev => ({ ...prev, weight: p.weight }))}
+                                    className={`px-4 py-2 text-sm font-medium rounded-full border transition-all ${
+                                      formData.weight === p.weight
+                                        ? 'bg-primary text-white border-primary shadow-md'
+                                        : 'bg-white text-on-surface border-gray-300 hover:border-primary'
+                                    }`}
+                                  >
+                                    {p.weight}
+                                  </button>
+                                ))}
+                              </div>
+                            ) : (
+                              <div className="text-on-surface/80 font-medium">
+                                {currentPricing.weight}
+                              </div>
+                            )}
+                            <div className="text-[#D4A017] font-bold text-2xl">
+                              ₹{currentPricing.price}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })()}
 
                   <div>
                     <label htmlFor="delivery" className="block text-sm font-semibold text-on-surface mb-2">

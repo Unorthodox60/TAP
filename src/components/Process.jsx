@@ -61,7 +61,7 @@ const Marker = ({ inView, num }) => (
 const Photo = ({ step, photoY }) => (
   <motion.div 
     style={{ y: photoY }}
-    className="w-full lg:w-[320px] aspect-[4/3] lg:aspect-square lg:rounded-full rounded-2xl overflow-hidden shadow-soft border-4 border-white z-10 shrink-0 bg-surface"
+    className="w-full lg:w-[320px] aspect-[4/3] lg:aspect-square lg:rounded-full rounded-2xl overflow-hidden shadow-soft border-4 border-white z-10 shrink-0 bg-surface will-change-transform"
   >
     <picture>
       <source srcSet={`/images/${step.image}.webp`} type="image/webp" />
@@ -79,7 +79,7 @@ const Text = ({ step, align = "left" }) => (
   <div className={`relative z-10 flex flex-col justify-center w-full lg:max-w-md ${align === 'right' ? 'lg:items-end lg:text-right' : 'lg:items-start lg:text-left'}`}>
     {/* Decorative Number */}
     <div 
-      className={`absolute top-1/2 -translate-y-1/2 text-[160px] font-heading font-extrabold text-transparent pointer-events-none z-0
+      className={`absolute top-1/2 -translate-y-1/2 text-[160px] font-heading font-extrabold text-transparent pointer-events-none z-0 transform-gpu
         ${align === 'right' ? 'lg:right-0 lg:-mr-12' : 'lg:left-0 lg:-ml-12'} left-0 -ml-4
       `} 
       style={{ WebkitTextStroke: '2px rgba(27, 77, 46, 0.06)' }}
@@ -229,7 +229,7 @@ const Process = () => {
       className="relative bg-surface text-on-surface py-16 md:py-24 overflow-hidden"
     >
       {/* Background Watermark (Top Right) */}
-      <div className="absolute top-0 right-0 opacity-[0.04] pointer-events-none z-0 w-[40%] max-w-[400px]">
+      <div className="absolute top-0 right-0 opacity-[0.04] pointer-events-none z-0 w-[40%] max-w-[400px] transform-gpu">
         <svg viewBox="0 0 40 40" className="w-full h-auto text-primary" fill="currentColor">
           <path d="M20 32 V12 M12 18 C12 24 14 26 20 26 C26 26 28 24 28 18 M16 16 L20 10 L24 16" />
         </svg>
@@ -248,7 +248,7 @@ const Process = () => {
           className="absolute top-0 bottom-0 left-[24px] lg:left-1/2 w-[2px] bg-primary/10 -translate-x-1/2 z-0"
         >
           <motion.div 
-            className="absolute top-0 left-0 w-full h-full bg-highlight origin-top"
+            className="absolute top-0 left-0 w-full h-full bg-highlight origin-top will-change-transform"
             style={{ scaleY: shouldReduceMotion ? 1 : scrollYProgress }}
           />
         </div>

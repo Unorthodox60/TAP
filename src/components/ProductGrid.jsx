@@ -1,19 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Tag } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const products = [
+export const productsData = [
   { id: 1, nameEn: 'Mango Pickle', nameHi: 'आम का अचार', image: 'mango_pickle', preorder: true, spicy: true },
   { id: 2, nameEn: 'Lemon Pickle', nameHi: 'नींबू का अचार', image: 'mango_pickle', preorder: false, spicy: false }, // Using mango placeholder
-  { id: 3, nameEn: 'Mixed Pickle', nameHi: 'मिक्स अचार', image: 'garlic_pickle', preorder: false, spicy: true }, // Using garlic placeholder
+  { id: 3, nameEn: 'Normal Mix Pickle', nameHi: 'मिक्स अचार', image: 'garlic_pickle', preorder: false, spicy: true, pricing: [{ weight: '250g', price: 150 }] }, // Using garlic placeholder
   { id: 4, nameEn: 'Garlic Pickle', nameHi: 'लहसुन का अचार', image: 'garlic_pickle', preorder: false, spicy: true },
   { id: 5, nameEn: 'Chilli Pickle', nameHi: 'मिर्च का अचार', image: 'garlic_pickle', preorder: false, spicy: true },
   { id: 6, nameEn: 'Bitter Gourd', nameHi: 'करेला का अचार', image: 'mango_pickle', preorder: true, spicy: false },
   { id: 7, nameEn: 'Carrot Pickle', nameHi: 'गाजर का अचार', image: 'mango_pickle', preorder: false, spicy: false },
+  { id: 9, nameEn: 'Karonda-Gajar Pickle', nameHi: 'करौंदा-गाजर अचार', image: 'mango_pickle', preorder: false, spicy: false, pricing: [{ weight: '1kg', price: 600 }] },
 ];
 
-const dryFruits = [
-  { id: 8, nameEn: 'Premium Mixed Dry Fruit', nameHi: 'काजू, बादाम, अखरोट, किशमिश', image: 'dry_fruit_pickle', preorder: true, spicy: false },
+export const dryFruitsData = [
+  { id: 8, nameEn: 'Kaju-Badam Pickle', nameHi: 'काजू-बादाम अचार', image: 'dry_fruit_pickle', preorder: true, spicy: false, pricing: [{ weight: '100g', price: 120 }, { weight: '1kg', price: 1200 }] },
 ];
 
 const cardVariants = {
@@ -30,6 +31,16 @@ const cardVariants = {
 };
 
 const ProductCard = ({ product }) => {
+  const [selectedWeightIdx, setSelectedWeightIdx] = useState(0);
+
+  const hasPricing = product.pricing && product.pricing.length > 0;
+  const currentPricing = hasPricing ? product.pricing[selectedWeightIdx] : null;
+
+  let whatsappUrl = `https://wa.me/919696771100?text=Hello%20Triveni%20Achar,%20I%20would%20like%20to%20order%20${encodeURIComponent(product.nameEn)}`;
+  if (hasPricing) {
+    whatsappUrl = `https://wa.me/919696771100?text=${encodeURIComponent(`मुझे ${product.nameHi} (${currentPricing.weight} - ₹${currentPricing.price}) चाहिए`)}`;
+  }
+
   return (
     <motion.div 
       className="card flex flex-col group relative bg-white rounded-[24px] overflow-hidden border border-highlight/10 shadow-sm"
@@ -92,11 +103,36 @@ const ProductCard = ({ product }) => {
 
       <div className="p-5 md:p-6 flex flex-col flex-grow bg-white relative z-10">
         <h3 className="font-heading font-bold text-xl text-primary mb-1">{product.nameHi}</h3>
-        <p className="text-on-surface/70 text-sm mb-5 font-medium">{product.nameEn}</p>
+        <p className="text-on-surface/70 text-sm mb-3 font-medium">{product.nameEn}</p>
         
+        {hasPricing && (
+          <div className="mb-4">
+            {product.pricing.length > 1 && (
+              <div className="flex flex-wrap gap-2 mb-3">
+                {product.pricing.map((p, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedWeightIdx(idx)}
+                    className={`px-3 py-1 text-xs font-medium rounded-full border transition-colors ${
+                      selectedWeightIdx === idx
+                        ? 'bg-primary text-white border-primary'
+                        : 'bg-white text-on-surface/70 border-gray-300 hover:border-primary'
+                    }`}
+                  >
+                    {p.weight}
+                  </button>
+                ))}
+              </div>
+            )}
+            <div className="text-[#D4A017] font-bold text-lg">
+              {product.pricing.length === 1 ? `${currentPricing.weight} — ` : ''}₹{currentPricing.price}
+            </div>
+          </div>
+        )}
+
         <div className="mt-auto flex flex-col gap-2">
           <a 
-            href={`https://wa.me/919696771100?text=Hello%20Triveni%20Achar,%20I%20would%20like%20to%20order%20${encodeURIComponent(product.nameEn)}`}
+            href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-primary w-full text-sm py-2.5"
@@ -145,7 +181,7 @@ const ProductGrid = () => {
               }
             }}
           >
-            {products.map(product => (
+            {productsData.map(product => (
               <ProductCard key={product.id} product={product} />
             ))}
           </motion.div>
@@ -177,7 +213,7 @@ const ProductGrid = () => {
               }
             }}
           >
-            {dryFruits.map(product => (
+            {dryFruitsData.map(product => (
               <ProductCard key={product.id} product={product} />
             ))}
           </motion.div>
