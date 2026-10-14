@@ -10,8 +10,14 @@ import TrustBadges from './components/TrustBadges';
 import PreorderForm from './components/PreorderForm';
 import FAQ from './components/FAQ';
 import Footer from './components/Footer';
+import CartDrawer from './components/CartDrawer';
+import AuthModal from './components/AuthModal';
+import CheckoutModal from './components/CheckoutModal';
+import { Toaster } from 'react-hot-toast';
+import { useState } from 'react';
 
 function App() {
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   useEffect(() => {
     const lenis = new Lenis({
       lerp: 0.08,
@@ -28,10 +34,21 @@ function App() {
     return () => lenis.destroy();
   }, []);
 
+  useEffect(() => {
+    const handleOpenCheckout = () => setIsCheckoutOpen(true);
+    window.addEventListener('open-checkout', handleOpenCheckout);
+    return () => window.removeEventListener('open-checkout', handleOpenCheckout);
+  }, []);
+
   const { scrollYProgress } = useScroll();
 
   return (
     <MotionConfig reducedMotion="user">
+      <Toaster position="top-center" />
+      <CartDrawer />
+      <AuthModal />
+      <CheckoutModal isOpen={isCheckoutOpen} onClose={() => setIsCheckoutOpen(false)} />
+      
       <div className="min-h-screen flex flex-col font-body bg-surface text-on-surface">
         {/* Sticky scroll-progress accent line */}
         <motion.div 

@@ -8,13 +8,17 @@ export const productsData = [
   { id: 3, nameEn: 'Normal Mix Pickle', nameHi: 'मिक्स अचार', image: 'garlic_pickle', preorder: false, spicy: true, pricing: [{ weight: '250g', price: 150 }] }, // Using garlic placeholder
   { id: 4, nameEn: 'Garlic Pickle', nameHi: 'लहसुन का अचार', image: 'garlic_pickle', preorder: false, spicy: true },
   { id: 5, nameEn: 'Chilli Pickle', nameHi: 'मिर्च का अचार', image: 'garlic_pickle', preorder: false, spicy: true },
-  { id: 6, nameEn: 'Bitter Gourd', nameHi: 'करेला का अचार', image: 'mango_pickle', preorder: true, spicy: false },
   { id: 7, nameEn: 'Carrot Pickle', nameHi: 'गाजर का अचार', image: 'mango_pickle', preorder: false, spicy: false },
   { id: 9, nameEn: 'Karonda-Gajar Pickle', nameHi: 'करौंदा-गाजर अचार', image: 'mango_pickle', preorder: false, spicy: false, pricing: [{ weight: '1kg', price: 600 }] },
+  { id: 10, nameEn: 'Amla Pickle', nameHi: 'आंवला अचार', image: 'mango_pickle', preorder: false, spicy: false, pricing: [{ weight: '500g', price: 250 }, { weight: '1kg', price: 500 }] },
+  { id: 11, nameEn: 'Suran/Yam Pickle', nameHi: 'सूरन अचार', image: 'mango_pickle', preorder: false, spicy: true, pricing: [{ weight: '500g', price: 250 }, { weight: '1kg', price: 500 }] },
+  { id: 12, nameEn: 'Lal/Hara Mirch Pickle', nameHi: 'लाल/हरा मिर्च अचार', image: 'garlic_pickle', preorder: false, spicy: true, pricing: [{ weight: '500g', price: 250 }, { weight: '1kg', price: 500 }] },
+  { id: 13, nameEn: 'Singhada/Water Chestnut Pickle', nameHi: 'सिंघाड़ा अचार', image: 'mango_pickle', preorder: false, spicy: false, pricing: [{ weight: '500g', price: 250 }, { weight: '1kg', price: 500 }] },
+  { id: 14, nameEn: 'Kathal/Jackfruit Pickle', nameHi: 'कटहल अचार', image: 'mango_pickle', preorder: false, spicy: true, pricing: [{ weight: '500g', price: 250 }, { weight: '1kg', price: 500 }] },
 ];
 
 export const dryFruitsData = [
-  { id: 8, nameEn: 'Kaju-Badam Pickle', nameHi: 'काजू-बादाम अचार', image: 'dry_fruit_pickle', preorder: true, spicy: false, pricing: [{ weight: '100g', price: 120 }, { weight: '1kg', price: 1200 }] },
+  { id: 8, nameEn: 'Kaju-Badam Pickle', nameHi: 'काजू-बादाम अचार', image: 'dry_fruit_pickle', preorder: true, spicy: false, pricing: [{ weight: '500g', price: 600 }, { weight: '1kg', price: 1200 }] },
 ];
 
 const cardVariants = {
@@ -30,16 +34,32 @@ const cardVariants = {
   }
 };
 
-const ProductCard = ({ product }) => {
+import { useStore } from '../store/useStore';
+import toast from 'react-hot-toast';
+import ProductDetailModal from './ProductDetailModal';
+
+const ProductCard = ({ product, onOpenDetail }) => {
   const [selectedWeightIdx, setSelectedWeightIdx] = useState(0);
+  const addToCart = useStore(state => state.addToCart);
+  const setIsCartOpen = useStore(state => state.setIsCartOpen);
 
   const hasPricing = product.pricing && product.pricing.length > 0;
   const currentPricing = hasPricing ? product.pricing[selectedWeightIdx] : null;
 
-  let whatsappUrl = `https://wa.me/919696771100?text=Hello%20Triveni%20Achar,%20I%20would%20like%20to%20order%20${encodeURIComponent(product.nameEn)}`;
+  let whatsappUrl = `https://wa.me/917905045552?text=Hello%20Triveni%20Achar,%20I%20would%20like%20to%20order%20${encodeURIComponent(product.nameEn)}`;
   if (hasPricing) {
-    whatsappUrl = `https://wa.me/919696771100?text=${encodeURIComponent(`मुझे ${product.nameHi} (${currentPricing.weight} - ₹${currentPricing.price}) चाहिए`)}`;
+    whatsappUrl = `https://wa.me/917905045552?text=${encodeURIComponent(`मुझे ${product.nameHi} (${currentPricing.weight} - ₹${currentPricing.price}) चाहिए`)}`;
   }
+
+  const handleAddToCart = () => {
+    if (!hasPricing) {
+      toast.error('Pricing not available yet.');
+      return;
+    }
+    addToCart(product, currentPricing.weight, currentPricing.price);
+    toast.success(`${product.nameEn} added to cart`);
+    setIsCartOpen(true);
+  };
 
   return (
     <motion.div 
@@ -86,7 +106,10 @@ const ProductCard = ({ product }) => {
         </motion.div>
       )}
 
-      <div className="relative aspect-w-4 aspect-h-3 w-full bg-gray-100 overflow-hidden">
+      <div 
+        className="relative aspect-w-4 aspect-h-3 w-full bg-gray-100 overflow-hidden cursor-pointer"
+        onClick={() => onOpenDetail(product)}
+      >
         <picture>
           <source srcSet={`/images/${product.image}.webp`} type="image/webp" />
           <motion.img 
@@ -102,7 +125,12 @@ const ProductCard = ({ product }) => {
       </div>
 
       <div className="p-5 md:p-6 flex flex-col flex-grow bg-white relative z-10">
-        <h3 className="font-heading font-bold text-xl text-primary mb-1">{product.nameHi}</h3>
+        <h3 
+          className="font-heading font-bold text-xl text-primary mb-1 cursor-pointer hover:underline"
+          onClick={() => onOpenDetail(product)}
+        >
+          {product.nameHi}
+        </h3>
         <p className="text-on-surface/70 text-sm mb-3 font-medium">{product.nameEn}</p>
         
         {hasPricing && (
@@ -131,14 +159,22 @@ const ProductCard = ({ product }) => {
         )}
 
         <div className="mt-auto flex flex-col gap-2">
-          <a 
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-primary w-full text-sm py-2.5"
-          >
-            Order on WhatsApp
-          </a>
+          <div className="flex gap-2 w-full">
+            <button 
+              onClick={handleAddToCart}
+              className="btn-primary flex-1 text-sm py-2.5 bg-[#4CAF50] hover:bg-[#45a049] border-[#4CAF50] hover:border-[#45a049] !text-white"
+            >
+              Add to Cart
+            </button>
+            <a 
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-secondary flex-1 text-sm py-2.5 text-center flex items-center justify-center gap-1"
+            >
+              Order on WhatsApp
+            </a>
+          </div>
           
           {product.preorder && (
             <a href="#preorder" className="btn-secondary w-full text-sm py-2.5">
@@ -152,8 +188,15 @@ const ProductCard = ({ product }) => {
 };
 
 const ProductGrid = () => {
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
   return (
     <div className="py-24 bg-surface relative">
+      <ProductDetailModal 
+        isOpen={!!selectedProduct} 
+        onClose={() => setSelectedProduct(null)} 
+        product={selectedProduct} 
+      />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         <section id="pickles" className="mb-24">
@@ -182,7 +225,7 @@ const ProductGrid = () => {
             }}
           >
             {productsData.map(product => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product.id} product={product} onOpenDetail={setSelectedProduct} />
             ))}
           </motion.div>
         </section>
@@ -214,7 +257,7 @@ const ProductGrid = () => {
             }}
           >
             {dryFruitsData.map(product => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product.id} product={product} onOpenDetail={setSelectedProduct} />
             ))}
           </motion.div>
         </section>

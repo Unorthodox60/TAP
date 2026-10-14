@@ -50,7 +50,7 @@ const Hero = () => {
               transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             >
               <MagneticButton 
-                href="https://wa.me/919696771100?text=Hello%20Triveni%20Achar,%20I%20would%20like%20to%20order" 
+                href="https://wa.me/917905045552?text=Hello%20Triveni%20Achar,%20I%20would%20like%20to%20order" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="btn-primary"

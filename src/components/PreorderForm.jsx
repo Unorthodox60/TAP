@@ -52,7 +52,7 @@ const PreorderForm = () => {
       
       // Open whatsapp after a tiny delay so the success state is visible
       setTimeout(() => {
-        window.open(`https://wa.me/919696771100?text=${encodedMessage}`, '_blank');
+        window.open(`https://wa.me/917905045552?text=${encodedMessage}`, '_blank');
       }, 800);
       
       // Reset form after a few seconds

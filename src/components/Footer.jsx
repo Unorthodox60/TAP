@@ -28,14 +28,14 @@ const Footer = () => {
             <h4 className="font-heading font-bold text-lg mb-4 text-white">Contact & Order</h4>
             <ul className="space-y-3 text-surface/80">
               <li>
-                <a href="tel:+919696771100" className="hover:text-highlight transition-colors flex items-center min-h-[44px]">
+                <a href="tel:+917905045552" className="hover:text-highlight transition-colors flex items-center min-h-[44px]">
                   <Phone className="w-5 h-5 mr-3 flex-shrink-0" />
-                  +91 96967 71100
+                  +91 79050 45552
                 </a>
               </li>
               <li>
                 <a 
-                  href="https://wa.me/919696771100" 
+                  href="https://wa.me/917905045552" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="hover:text-highlight transition-colors flex items-center min-h-[44px]"
