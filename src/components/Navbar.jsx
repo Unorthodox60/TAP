@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Phone, Menu, X, ShoppingCart, User, LogOut, Package, MapPin } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Logo from './Logo';
 import { useStore } from '../store/useStore';
 
@@ -95,13 +96,23 @@ const Navbar = () => {
             <button 
               onClick={() => setIsCartOpen(true)}
               className="text-primary hover:text-highlight transition-colors p-2 inline-flex items-center justify-center min-h-[44px] min-w-[44px] relative"
+              aria-label="View Shopping Cart"
             >
               <ShoppingCart className="h-6 w-6" />
-              {cartItemCount > 0 && (
-                <span className="absolute top-1 right-1 bg-highlight text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">
-                  {cartItemCount}
-                </span>
-              )}
+              <AnimatePresence>
+                {cartItemCount > 0 && (
+                  <motion.span 
+                    key={cartItemCount}
+                    initial={{ scale: 0.5, opacity: 0 }}
+                    animate={{ scale: [1.35, 0.9, 1], opacity: 1 }}
+                    exit={{ scale: 0.5, opacity: 0 }}
+                    transition={{ type: "spring", stiffness: 600, damping: 14 }}
+                    className="absolute top-1 right-1 bg-highlight text-white text-[10px] font-bold rounded-full h-4.5 w-4.5 min-w-[18px] min-h-[18px] flex items-center justify-center shadow-xs"
+                  >
+                    {cartItemCount}
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </button>
           </div>
 
@@ -125,13 +136,23 @@ const Navbar = () => {
             <button 
               onClick={() => setIsCartOpen(true)}
               className="text-primary hover:text-highlight transition-colors p-2 inline-flex items-center justify-center min-h-[44px] min-w-[44px] relative"
+              aria-label="View Shopping Cart"
             >
               <ShoppingCart className="h-5 w-5" />
-              {cartItemCount > 0 && (
-                <span className="absolute top-1 right-1 bg-highlight text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">
-                  {cartItemCount}
-                </span>
-              )}
+              <AnimatePresence>
+                {cartItemCount > 0 && (
+                  <motion.span 
+                    key={cartItemCount}
+                    initial={{ scale: 0.5, opacity: 0 }}
+                    animate={{ scale: [1.35, 0.9, 1], opacity: 1 }}
+                    exit={{ scale: 0.5, opacity: 0 }}
+                    transition={{ type: "spring", stiffness: 600, damping: 14 }}
+                    className="absolute top-1 right-1 bg-highlight text-white text-[10px] font-bold rounded-full h-4.5 w-4.5 min-w-[18px] min-h-[18px] flex items-center justify-center shadow-xs"
+                  >
+                    {cartItemCount}
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </button>
             <button
               onClick={() => setIsOpen(!isOpen)}

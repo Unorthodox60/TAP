@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { X, Star, ShoppingCart, MessageSquare } from 'lucide-react';
 import { useStore } from '../store/useStore';
-import { supabase } from '../lib/supabase';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -128,9 +127,9 @@ const ProductDetailModal = ({ isOpen, onClose, product }) => {
                 <div className="mt-auto pt-6 border-t border-gray-100">
                   <button 
                     onClick={handleAddToCart}
-                    className="w-full btn-primary py-4 text-lg flex items-center justify-center gap-2"
+                    className="h-[48px] w-full rounded-[10px] bg-[#1B4D2E] hover:bg-[#153e24] active:scale-[0.98] transition-all duration-[120ms] ease-out text-[#FDFBF7] font-semibold text-[15px] flex items-center justify-center gap-2 shadow-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]"
                   >
-                    <ShoppingCart className="w-5 h-5" /> Add to Cart
+                    <ShoppingCart size={18} className="text-[#FDFBF7] flex-shrink-0" /> Add to Cart
                   </button>
                 </div>
               </div>
